@@ -1,7 +1,7 @@
-requests 
-re
-pyrogram
-bs4
+requests:2.28.1
+re:3.11.1
+pyrogram:2.0.96
+bs4:4.11.1
 
 
 
