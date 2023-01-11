@@ -11,7 +11,7 @@ from pyrogram.types import InlineKeyboardMarkup as ikm
 # url = 'https://vegamovies.baby/?s=' + text
 
 bot = Client("66s",
-             bot_token="5744404637:AAFE_x1pInEJWdLPWe1rOjql-of6R0cQsqs",
+             bot_token="5824866627:AAH1zmWkvNLLz09ydr1WUmMn0oUHz-8q1RM",
              api_id="1712043",
              api_hash="965c994b615e2644670ea106fd31daaf")
 
