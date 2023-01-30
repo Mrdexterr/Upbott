@@ -22,7 +22,7 @@ async def movievala(url, bot, message, mess):
   response = requests.get(url)
   html = response.content.decode()
   soup = BeautifulSoup(html, "html.parser")
-  link = soup.find_all("div", attrs={"class": "A2"})
+  link = soup.find_all("div", attrs={"class": "thumb rsz"})
   array = []
 
   for i in link:
@@ -32,8 +32,8 @@ async def movievala(url, bot, message, mess):
     break
   try:
     x = "".join(a1)
-    x1 = "https://www.filmy4wap.express" + x
-  # print(x)
+    x1 = "https://filmyfly.net/" + x
+
   except:
     await mess.edit(text='<code>..No Movie Found..</code>')
 
@@ -41,27 +41,18 @@ async def movievala(url, bot, message, mess):
   response1 = requests.get(x1)
   html1 = response1.content.decode()
   soup1 = BeautifulSoup(html1, "html.parser")
-  mname = soup1.find("div", attrs={"class": "colora"})
+  mname = soup1.find("h2", attrs={"class": "header3"})
   moviename = mname.text
   await mess.edit(text='<code>Search Completed</code>')
   #  print (moviename)
   link1 = soup1.find("a",
-                     attrs={"href": re.compile("/page-downloading-page/")})
+                     attrs={"href": re.compile("https://link2me.xyz/")})
   y = link1["href"]
   y1 = "".join(y)
-  y2 = "https://www.filmy4wap.express" + y1
 
-  response2 = requests.get(y2)
-  html2 = response2.content.decode()
-  soup2 = BeautifulSoup(html2, "html.parser")
-  try:
-    link2 = soup2.find("a", attrs={"href": re.compile("https://link2me.xyz/")})
-    z = link2["href"]
-    z1 = "".join(z)
-  except:
-    await mess.edit(text='<code>..No Movie Found..</code>')
+  print (y1)
 
-  response3 = requests.get(z1)
+  response3 = requests.get(y1)
   html3 = response3.content.decode()
   soup3 = BeautifulSoup(html3, "html.parser")
   getlink = soup3.find_all("div", attrs={"class": "dlink dl"})
@@ -104,11 +95,10 @@ def start(bot, message):
 async def sm(bot, message):
   mess = await message.reply(text='<code>Searching \nPlease Wait...</code>')
   movie = message.text
-  url = "https://www.filmy4wap.express/site-1.html?to-search=" + movie
+  url = "https://filmyfly.net/site-search.html?to-search=" + movie
   # print(url)
 
   resuult = await movievala(url, bot, message, mess)
 
 
 bot.run()
-close
