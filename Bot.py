@@ -1,104 +1,67 @@
-import re
-import time
+from bs4 import BeautifulSoup as bs
 import requests
-from bs4 import BeautifulSoup
+import re
 from pyrogram import Client, filters
-from pyrogram.client import Client
-from pyrogram.types import InlineKeyboardButton as ikb
-from pyrogram.types import InlineKeyboardMarkup as ikm
-
-# text = input('type movie name:- ')
-# url = 'https://vegamovies.baby/?s=' + text
-
-bot = Client("66s",
-             bot_token="5824866627:AAH1zmWkvNLLz09ydr1WUmMn0oUHz-8q1RM",
-             api_id="1712043",
-             api_hash="965c994b615e2644670ea106fd31daaf")
+from pyrogram.types import InlineKeyboardMarkup  as ikm 
+from pyrogram.types import InlineKeyboardButton as ikb 
 
 
-async def movievala(url, bot, message, mess):
+bot = Client(
+    "b1boqt",
+    bot_token="5631870454:AAHZ6U_YkOUITaxVuf73UN7COI7H11fINH4",
+    api_id=  1712043,
+    api_hash="965c994b615e2644670ea106fd31daaf"
+)
 
-  #-----------------url 1 ---------------------
-  response = requests.get(url)
-  html = response.content.decode()
-  soup = BeautifulSoup(html, "html.parser")
-  link = soup.find_all("div", attrs={"class": "thumb rsz"})
-  array = []
+#movie = input("Enter Movie Name: ")
+#url = "https://filmyfly.site/site-search.html?to-search="+movie
 
-  for i in link:
-    a = i.find("a")
-    array.append(a["href"])
-    a1 = a["href"]
-    break
-  try:
-    x = "".join(a1)
-    x1 = "https://filmyfly.net/" + x
-
-  except:
-    await mess.edit(text='<code>..No Movie Found..</code>')
-
-  #-----------------url 1 end ----------------------
-  response1 = requests.get(x1)
-  html1 = response1.content.decode()
-  soup1 = BeautifulSoup(html1, "html.parser")
-  mname = soup1.find("h2", attrs={"class": "header3"})
-  moviename = mname.text
-  await mess.edit(text='<code>Search Completed</code>')
-  #  print (moviename)
-  link1 = soup1.find("a",
-                     attrs={"href": re.compile("https://link2me.xyz/")})
-  y = link1["href"]
-  y1 = "".join(y)
-
-  print (y1)
-
-  response3 = requests.get(y1)
-  html3 = response3.content.decode()
-  soup3 = BeautifulSoup(html3, "html.parser")
-  getlink = soup3.find_all("div", attrs={"class": "dlink dl"})
-  # h = await bot.send_message(message.chat.id, "" + moviename + "")
-  if moviename == None or not moviename:
-    await bot.send_message(message.chat.id, "no movie found")
-  # else:
-  #   print(h)
-  global linklist
-  linklist = []
-  global qualitylist
-  qualitylist = []
-  global download_btn
-  download_btn = []
-  for i in getlink:
-    a = i.find("a")
-    b = i.text
-    c = a["href"]
-    i.append(c)
-    download_btn.append([ ikb(text = b, url = c) ])
-    # await bot.send_message(message.chat.id,
-    #                        b,
-    #                        reply_markup=ikm([[ikb(text="CLICK HERE", url=c)]]))
-    qualitylist.append(b)
-
-  await mess.delete()
-  await bot.send_message(message.chat.id, '' + moviename + '', reply_markup=ikm(download_btn))
-  return linklist, qualitylist
-
+async def movies(url,bot, message):
+    r = requests.get(url)
+    soup = bs(r.content, 'html.parser')
+    m1 = soup.find('div', class_="thumb rsz")
+    m2 = m1.find('a')['href']
+    m3 = "".join(m2)
+    m4 = "https://filmyfly.site"+m3
+    
+    r2 = requests.get(m4)
+    soup2 = bs(r2.content, 'html.parser')
+    mainname = soup2.find('h2', class_="header3").text
+    print(mainname)
+    await bot.send_message(message.chat.id, "**Movie Name :- **"+ mainname)
+    try:
+        m5 = soup2.find('a', attrs={'href' : re.compile("https://linkm")})
+        m6 = m5['href']
+        r3 = requests.get(m6)
+        soup3 = bs(r3.content, 'html.parser')
+        m7 = soup3.find_all('div', class_="dlink dl")
+        for i in m7:
+            m8 = i.find('a')['href']
+            m9 = i.find('a').text
+            await bot.send_message(message.chat.id, m9, reply_markup=ikm([[ikb(m9, url=m8)]]))
+    except:
+        m6 = soup2.find('div', class_="dlbtn")
+        for i in m6:
+            m7 = m6.find_all('a')
+            for i in m7:
+                mname = i.text
+                mlink = i['href']
+                await bot.send_message(message.chat.id, mname, reply_markup=ikm([[ikb(mname, url=mlink)]]))
+                
+            break
+        
 
 @bot.on_message(filters.command("start"))
 def start(bot, message):
-  bot.send_message(
-    message.chat.id,
-    "Welcome to MovieSearcherBot by @iRoleEx \n This bot is totally free to use \n for Query contact @iRoleEx",
-  )
+    bot.send_message(message.chat.id,"** Welcome to the MovieSearcher bot **\n **-> Send me the movie name and i will send you the direct download link of the movie 😊** \n Bot made by - @iRoleEx")
 
 
-@bot.on_message(filters.text & filters.incoming)
-async def sm(bot, message):
-  mess = await message.reply(text='<code>Searching \nPlease Wait...</code>')
-  movie = message.text
-  url = "https://filmyfly.net/site-search.html?to-search=" + movie
-  # print(url)
-
-  resuult = await movievala(url, bot, message, mess)
+@bot.on_message(filters.text & filters.private)
+async def movie(bot, message):
+    movie = message.text
+    url = "https://filmyfly.site/site-search.html?to-search="+movie
+    await movies(url,bot,message)
+    
 
 
 bot.run()
